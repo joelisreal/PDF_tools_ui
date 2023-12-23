@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Crop</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="pdfcrop.html">PDF Crop</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="ubc.html">UBC</a></li>
+                <li><a href="politics.html">Politics</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <h1>PDF Tools</h1>
+    </header>
+    <div class="container">
+        <div class="content">
+            <!--<h2>Projects</h2>
+            <p>This course 
+            </p>-->
+            <!--<form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="pdfFile">Upload a PDF:</label>
+                <input type="file" id="pdf-file-input" name="pdfFile" accept="application/pdf">
+                <input type="submit" value="Upload">
+            </form>
+            <canvas id="pdf-canvas"></canvas>
+            <iframe id="pdf-iframe" src="https://docs.google.com/viewer?url=https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf&embedded=true" frameborder="0"></iframe>-->
+            <div id = "upload" class = "upload">
+                <a class="button-upload tooltip--left active" id="pickfiles" href="javascript:;" title="Add more files" style="position: relative; z-index: 1;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke-linecap="round" stroke-width="2" stroke="#fff" fill="none" stroke-linejoin="round"><desc>Upload your file and transform it.</desc><path d="M10 1.833v16.333"></path><path d="M1.833 10h16.333"></path></svg>
+                    <span>Select PDF files</span>
+                </a>
+                <div class="upload-droptxt">or drop PDFs here</div>
+            </div>
+            <!--<input type="file" id="pdfFile" name="pdfFile" accept="application/pdf" style="display: none;">
+            <a class="uploader__btn tooltip--left active" id="pickfiles" href="javascript:;" title="Add more files" style="position: relative; z-index: 1;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke-linecap="round" stroke-width="2" stroke="#fff" fill="none" stroke-linejoin="round"><desc>Upload your file and transform it.</desc><path d="M10 1.833v16.333"></path><path d="M1.833 10h16.333"></path></svg>
+                <span>Select PDF files</span>
+            </a>-->
+
+        
+            <!--<form id="uploadForm"  method="post" enctype="multipart/form-data">
+                <label for="pdf-file-input">Upload a PDF:</label>
+                <input type="file" id="pdf-file-input" name="pdf-file-input" accept="application/pdf">
+                <input type="submit" value="Upload">
+            </form>
+            <canvas id="pdf-canvas"></canvas>
+            <iframe id="pdf-iframe" width="100%" height="600px" frameborder="0"></iframe>
+            <iframe src="https://docs.google.com/viewer?url=https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf&embedded=true" width="100%" height="600px" frameborder="0"></iframe>-->
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2023 Your Website. All rights reserved.</p>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+    <script>
+        document.getElementById('pickfiles').addEventListener('click', function() {
+            //document.getElementById('pdfFile').click();
+            // Create a new file input element
+            var fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.style.display = 'none';
+
+            // Add an event listener for when a file is selected
+            fileInput.addEventListener('change', function(e) {
+                // TODO: Handle the file selection
+                var file = e.target.files[0];
+                if (file.type == "application/pdf") {
+                    var objectUrl = URL.createObjectURL(file);// + "#view=FitH";
+
+                    // Print the object URL to the console
+                    console.log(objectUrl);
+                    // Hide the button
+                    document.getElementById('pickfiles').style.display = 'none';
+
+                    // Hide the drop text
+                    document.querySelector('.upload-droptxt').style.display = 'none';
+
+
+                    // Load the PDF
+                    pdfjsLib.getDocument(objectUrl).promise.then(function(pdf) {
+                        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js';
+                        // Render the first page
+                        pdf.getPage(1).then(function(page) {
+                            var scale = 1.5;
+                            var viewport = page.getViewport({ scale: 1.5 });
+
+                            // Prepare canvas using PDF page dimensions
+                            // Create an iframe to display the file
+                            var canvas = document.createElement('canvas');
+                            var contentDiv = document.getElementById('upload');
+                            contentDiv.appendChild(canvas);
+                            //canvas.width = '600px';
+                            //canvas.height = '800px';
+                            //var canvas = document.getElementById('upload'); //pdf-canvas
+                            var context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+
+                            // Render PDF page into canvas context
+                            var renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            page.render(renderContext);
+                        });
+                    });
+
+                    // Handle mouse events to select a rectangle to crop
+                    // var canvas = document.getElementById('upload');//pdf-canvas
+                    // var context = canvas.getContext('2d');
+                    // var rect = {};
+                    // var drag = false;
+
+                    // canvas.addEventListener('mousedown', function(e) {
+                    //     rect.startX = e.pageX - this.offsetLeft;
+                    //     rect.startY = e.pageY - this.offsetTop;
+                    //     drag = true;
+                    // });
+
+                    // canvas.addEventListener('mouseup', function() {
+                    //     drag = false;
+                    //     // TODO: Crop the canvas based on rect.startX, rect.startY, rect.w, rect.h
+                    // });
+
+                    // canvas.addEventListener('mousemove', function(e) {
+                    //     if (drag) {
+                    //         rect.w = (e.pageX - this.offsetLeft) - rect.startX;
+                    //         rect.h = (e.pageY - this.offsetTop) - rect.startY;
+                    //         context.clearRect(0, 0, canvas.width, canvas.height);
+                    //         context.fillRect(rect.startX, rect.startY, rect.w, rect.h);
+                    //     }
+                    // });
+
+                }
+            });
+            // Add the file input element to the body
+            // This is necessary for the click event to work
+            document.body.appendChild(fileInput);
+
+            // Trigger the click event
+            fileInput.click();
+
+            // Remove the file input element after the dialog is opened
+            // This is necessary to ensure that a new file input element is created each time
+            fileInput.parentNode.removeChild(fileInput);
+        });
+    </script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
