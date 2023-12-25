@@ -151,6 +151,32 @@ nav ul li a {
     justify-content: center;
     font-size: 14px;
 }
+
+#upload {
+    background-color: bisque;
+}
+
+#upload.file-selected {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* overflow-y: scroll; */
+    /* height: 500px; */
+}
+
+.pdf-page.file-selected {
+    border: 1px solid #c98989;
+    margin-bottom: 10px;
+}
+
+canvas.file-selected {
+    background-color: aquamarine;
+}
+
+/* #scroll-pdf-div {
+    overflow-y: scroll;
+} */
 /*
 #upload {
     position: relative;
