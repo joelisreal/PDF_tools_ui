@@ -1,0 +1,15 @@
+{% extends "basepdf.html" %}
+{% block title %}PDF Download{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="tool-header">
+        <h1 class="tool-title">PDF Download</h1>
+        <h2 class="tool-subtitle">Reduce PDF file size</h2>
+    </div>
+    <div id = "upload" class = "upload">
+        <a class="button-download tooltip--left active" id="getfiles" href="{{ url_for('download_all') }}" title="Add more files" style="position: relative; z-index: 1;">
+            <span>Download PDF files</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

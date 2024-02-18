@@ -1,0 +1,71 @@
+nav a .fa.fa-bars {
+    display: none;
+}
+
+
+
+/* Responsive layout - makes the menu and the content stack on top of each other */
+@media (max-width: 685px) {
+    header {
+        flex-direction: column;
+    }
+
+    nav ul {
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+
+    nav ul li {
+        float: none;
+        width: 100%;
+        text-align: left;
+    }
+
+
+
+    /* Style the navigation menu */
+    nav {
+    overflow: hidden;
+    background-color: #b12929 !important;
+    margin-top: 20px;
+  }
+  
+  /* Hide the links inside the navigation menu (except for logo/home) */
+  nav #myLinks {
+    display: none;
+  }
+
+  nav a .fa.fa-bars {
+    display: block;
+}
+  
+  /* Style navigation menu links */
+  nav a {
+    color: white;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    display: block;
+  }
+  
+  /* Style the hamburger menu */
+  nav a.icon {
+    background: black;
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  
+  /* Add a grey background color on mouse-over */
+  nav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  
+  /* Style the active link (or home/logo) */
+  .active {
+    background-color: #04AA6D;
+    color: white;
+  }
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/pdfcompress.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/pdfcompress.css') }}">
+
+    <!-- Load an icon library to show a hamburger menu (bars) on small screens -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+        <!-- <div class="topnav"> -->
+            <div id="myLinks">
+                <!-- <a href="pdfcrop.html">PDF Crop</a>
+                <a href="{{ url_for('pdf_compress')}}">PDF Compress</a>
+                <a href="pdfmerge.html">PDF Merge</a>
+                <a href="pdfsplit.html">PDF Split</a>
+                <a href="about.html">About</a> -->
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="pdfcrop.html">PDF Crop</a></li>
+                    <li><a href="{{ url_for('pdf_compress')}}">PDF Compress</a></li>
+                    <li><a href="pdfmerge.html">PDF Merge</a></li>
+                    <li><a href="pdfsplit.html">PDF Split</a></li>
+                    <!-- <li><a href="about.html">About</a></li> -->
+                </ul>
+            </div>
+            <!-- "Hamburger menu" / "Bar icon" to toggle the navigation links -->
+            <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+            <i class="fa fa-bars"></i>
+            </a>
+        <!-- </div> -->
+        </nav>
+        <h1>PDF Tools</h1>
+    </header>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+        <!-- <div class="content" id="dropArea">
+            <svg id="add-more-files" xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke-linecap="round" stroke-width="2" stroke="#fff" fill="none" stroke-linejoin="round"><desc>Upload your file and transform it.</desc><path d="M10 1.833v16.333"></path><path d="M1.833 10h16.333"></path></svg>
+            <div class="tool-header">
+                <h1 class="tool-title">PDF Compressor</h1>
+                <h2 class="tool-subtitle">Reduce PDF file size</h2>
+            </div>
+            <div id = "upload" class = "upload">
+                <a class="button-upload tooltip--left active" id="pickfiles" href="javascript:;" title="Add more files" style="position: relative; z-index: 1;">
+                    <svg id="add-more-files" xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke-linecap="round" stroke-width="2" stroke="#fff" fill="none" stroke-linejoin="round"><desc>Upload your file and transform it.</desc><path d="M10 1.833v16.333"></path><path d="M1.833 10h16.333"></path></svg>
+                    <span>Select PDF files</span>
+                </a>
+                <div class="upload-droptxt">or drop PDFs here</div>
+            </div>
+        </div> -->
+    </div>
+    <footer>
+        <p>&copy; 2023 Your Website. All rights reserved.</p>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src=" {{ url_for('static', filename='assets/js/base.js') }}"></script>
+    <!-- <script src="assets/js/script.js"></script>
+    <script src="assets/js/compresspdf.js"></script>
+    <script src="assets/js/compressedpdfcall.js"></script> -->
+    {% block scripts %}{% endblock %}
+    <!-- <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/compresspdf.js') }}"></script> -->
+    
+    <!-- <script src="{{ url_for('static', filename='assets/js/compressedpdfcall.js') }}"></script> -->
+</body>
+</html>

@@ -1,0 +1,134 @@
+.pdf-page.file-selected {
+    display: flex;
+    flex-direction: column;
+}
+
+#closeButton {
+    order: -1;
+    align-self: flex-end;
+}
+
+#add-more-files {
+    background: #2e5bf6;
+    border-radius: 50%; /* Make it a circle */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#add-more-files:hover {
+    background-color: #1c3cb9;
+    color: #ffffff!important;
+    text-decoration: none;
+}
+
+/* Initially hide the tooltip */
+.tooltip {
+    display: none;
+    position: absolute;
+    top: -5px;
+    left: -120px;
+    /* visibility: hidden; */
+    /* position: absolute; */
+    /* position: relative; */
+    background-color: #000;
+    color: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    z-index: 10;
+    order: -1;
+}
+
+/* Show the tooltip when hovering over add-more-files;
+    The styles apply to the tooltip when add-more-files
+    hovered over. */
+#add-more-files:hover + .tooltip {
+    display: inline-block;
+    /* visibility: visible; */
+    border: dashed yellow;
+    background-color: #1cb95d;
+}
+
+.side-tools {
+    /* position: absolute; */
+    position: relative;
+    /*top: 10px;*/ /* Adjust this value as needed */
+    /*right: 10px;*/ /* Adjust this value as needed */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* align-items: flex-end; */
+    /* margin-bottom: 20px; */
+    /* width: 80px; */
+    grid-column-start: 4;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end:  2;
+}
+
+.content.file-selected {
+    position: relative;
+    /* display: flex; */
+    display: grid;
+    grid-template-columns: [one] auto [two] auto [three] auto [four] min-content [five];
+}
+
+#upload {
+    flex-grow: 1;
+    grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
+
+}
+
+#compress-pdf {
+    /* position: absolute; */
+    /* bottom: -10px;  */ /* Adjust as needed */
+    /* left: 50%;  */ /* Center horizontally if needed */
+    /* transform: translateX(-50%);  */ /* Center horizontally */
+    /* Other styles... */
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+#compress-pdf {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    min-height: 85px;
+    min-width: 335px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 25px 50px;
+    font-weight: 600;
+    font-size: 25px;
+    background: #2e5bf6;
+    line-height: 30px;
+    vertical-align: middle;
+    color: #ffffff!important;
+    text-decoration: none;
+    margin-bottom: 15px;
+    -webkit-transition: background-color .15s linear;
+    -o-transition: background-color .15s linear;
+    transition: background-color .15s linear;
+    /* border: none; */
+    border-radius: 15px;
+    -webkit-box-shadow: 0 4px 7px 0 rgba(0,0,0,.15);
+    box-shadow: 0 4px 7px 0 rgba(0,0,0,.15);
+    -ms-flex-order: 2;
+    order: 2;
+    max-width: 65vw;    
+}
+
+#compress-pdf:hover {
+    background-color: #1c3cb9;
+    color: #ffffff!important;
+    text-decoration: none
+}
