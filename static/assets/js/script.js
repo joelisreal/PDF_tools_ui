@@ -345,25 +345,4 @@ function uploadFile(file) {
     });
 }
 
-// Compression logic
-function compressFiles() {
-    $.post('/compress', function (data) {
-        // alert(data);
-    });
-}
 
-// Download logic
-function downloadFiles() {
-    window.location.href = '/download';
-}
-
-// Remove file logic
-function removeFile(fileId) {
-    $.ajax({
-        type: 'DELETE',
-        url: `/remove/${fileId}`,
-        success: function (data) {
-            // alert(data);
-        }
-    });
-}
