@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Crop</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="pdfcrop.html">PDF Crop</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+        <h1>PDF Tools</h1>
+    </header>
+    <div class="container">
+        <div class="content">
+            <!--<h2>Projects</h2>
+            <p>This course 
+            </p>-->
+            <!--<form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="pdfFile">Upload a PDF:</label>
+                <input type="file" id="pdf-file-input" name="pdfFile" accept="application/pdf">
+                <input type="submit" value="Upload">
+            </form>
+            <canvas id="pdf-canvas"></canvas>
+            <iframe id="pdf-iframe" src="https://docs.google.com/viewer?url=https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf&embedded=true" frameborder="0"></iframe>-->
+            <div id = "upload" class = "upload">
+                <!-- <div id="scroll-pdf-div" class="scroll-div">
+                    <div class="pdf-page">
+                        <canvas id="pdf-canvas"></canvas>
+                    </div>
+                </div> -->
+                <a class="button-upload tooltip--left active" id="pickfiles" href="javascript:;" title="Add more files" style="position: relative; z-index: 1;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke-linecap="round" stroke-width="2" stroke="#fff" fill="none" stroke-linejoin="round"><desc>Upload your file and transform it.</desc><path d="M10 1.833v16.333"></path><path d="M1.833 10h16.333"></path></svg>
+                    <span>Select PDF files</span>
+                </a>
+                <div class="upload-droptxt">or drop PDFs here</div>
+            </div>
+            <!--<input type="file" id="pdfFile" name="pdfFile" accept="application/pdf" style="display: none;">
+            <a class="uploader__btn tooltip--left active" id="pickfiles" href="javascript:;" title="Add more files" style="position: relative; z-index: 1;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke-linecap="round" stroke-width="2" stroke="#fff" fill="none" stroke-linejoin="round"><desc>Upload your file and transform it.</desc><path d="M10 1.833v16.333"></path><path d="M1.833 10h16.333"></path></svg>
+                <span>Select PDF files</span>
+            </a>-->
+
+        
+            <!--<form id="uploadForm"  method="post" enctype="multipart/form-data">
+                <label for="pdf-file-input">Upload a PDF:</label>
+                <input type="file" id="pdf-file-input" name="pdf-file-input" accept="application/pdf">
+                <input type="submit" value="Upload">
+            </form>
+            <canvas id="pdf-canvas"></canvas>
+            <iframe id="pdf-iframe" width="100%" height="600px" frameborder="0"></iframe>
+            <iframe src="https://docs.google.com/viewer?url=https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf&embedded=true" width="100%" height="600px" frameborder="0"></iframe>-->
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2023 Your Website. All rights reserved.</p>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+    <script>
+        // var scrollDiv = document.getElementById('scroll-pdf-div');
+        // scrollDiv.style.display = 'none';
+        document.getElementById('pickfiles').addEventListener('click', function() {
+            //document.getElementById('pdfFile').click();
+            // Create a new file input element
+            var fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.style.display = 'none';
+
+            // Add an event listener for when a file is selected
+            fileInput.addEventListener('change', function(e) {
+                // TODO: Handle the file selection
+                var file = e.target.files[0];
+                if (file.type == "application/pdf") {
+                    var objectUrl = URL.createObjectURL(file);// + "#view=FitH";
+
+                    // Print the object URL to the console
+                    console.log(objectUrl);
+                    // Hide the button
+                    document.getElementById('pickfiles').style.display = 'none';
+
+                    // Hide the drop text
+                    document.querySelector('.upload-droptxt').style.display = 'none';
+
+                    // Initialize the PDFJS library
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js';
+                    var scrollDiv = document.getElementById('scroll-pdf-div');
+                    //scrollDiv.style.display = 'block';
+
+                    // Load the PDF
+                    pdfjsLib.getDocument(objectUrl).promise.then(function(pdfDoc) {
+                        // pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js';
+
+                        // let currentPage = 1;
+                        // // Render the first page
+                        // renderPage(pdfDoc, currentPage);
+
+                        // Function to render a specific page
+                        function renderPage(pdf, pageNumber) {
+                            pdf.getPage(pageNumber).then(function(page) {
+                                var viewport = page.getViewport({ scale: 1.5 });
+
+                                // Add a new class to the upload div
+                                var uploadDiv = document.getElementById('upload');
+                                uploadDiv.classList.add('file-selected');
+
+                                // Modify the style
+                                uploadDiv.style.width = viewport.width;
+                                uploadDiv.style.height = viewport.height;
+                                uploadDiv.style.overflow = 'scroll';
+
+                                // Prepare canvas using PDF page dimensions
+                                var canvas = document.createElement('canvas');
+                                var contentDiv = document.getElementById('upload');
+                                contentDiv.appendChild(canvas);
+                                //canvas.width = '600px';
+                                //canvas.height = '800px';
+                                //var canvas = document.getElementById('upload'); //pdf-canvas
+                                var context = canvas.getContext('2d');
+                                canvas.height = viewport.height;
+                                canvas.width = viewport.width;
+
+                                // Render PDF page into canvas context
+                                var renderContext = {
+                                    canvasContext: context,
+                                    viewport: viewport
+                                };
+                                page.render(renderContext).promise.then(() => {
+                                    console.log(`Page ${pageNumber} rendered`);
+                                });
+                            });
+                        }
+
+                        // Function to render all pages
+                        function renderPages(pdfDoc) {
+                            // pdfDoc.getPage(1).then(function(page) {
+                            //     var viewport = page.getViewport({ scale: 1.5 });
+                            // });
+                            var scrollDiv = document.createElement('div');
+                            scrollDiv.setAttribute('id', 'scroll-pdf-div');
+                            scrollDiv.classList.add('scroll-div');
+                            scrollDiv.style.overflow = 'scroll';
+                            document.getElementById('upload').appendChild(scrollDiv);
+
+                            var uploadDiv = document.getElementById('upload');
+                                    uploadDiv.classList.add('file-selected');
+                                    // uploadDiv.style.width = viewport.width;
+                                    // uploadDiv.style.height = viewport.height;
+                            var rect = {};
+                            var drag = false;
+                            for (let pageNumber = 1; pageNumber <= pdfDoc.numPages; pageNumber++) {
+                                pdfDoc.getPage(pageNumber).then(function(page) {
+                                    var viewport = page.getViewport({ scale: 1.5 });
+                                    // var uploadDiv = document.getElementById('upload');
+                                    // uploadDiv.classList.add('file-selected');
+                                    // uploadDiv.style.width = viewport.width;
+                                    // uploadDiv.style.height = `${viewport.height}px`;
+                                    // scrollDiv.id = 'scroll-pdf-div';
+                                    uploadDiv.appendChild(scrollDiv);
+
+                                    scrollDiv.style.width = viewport.width;
+                                    scrollDiv.style.height = `${viewport.height}px`;
+                                    scrollDiv.style.margin = '10px 15px 20px 25px';
+
+                    
+                                    var pageDiv = document.createElement('div');
+                                    pageDiv.classList.add('pdf-page');
+                                    pageDiv.setAttribute('data-page-number', pageNumber); // Assign page number to the div
+                                    if (pageNumber === 1) {
+                                        pageDiv.classList.add('active');
+                                    }
+                                    pageDiv.classList.add('file-selected');
+                                    scrollDiv.appendChild(pageDiv);
+                                    // pageDiv.style.width = viewport.width;
+                                    // pageDiv.style.height = viewport.height;
+                                    
+                                    
+
+                                    // Create a new canvas for this page
+                                    var canvas = document.createElement('canvas');
+                                    var context = canvas.getContext('2d');
+                                    canvas.height = viewport.height;
+                                    canvas.width = viewport.width;
+                                    pageDiv.appendChild(canvas);
+
+                                    // Attach mouse event listeners to the canvas
+                                    canvas.addEventListener('mousedown', function(e) {
+                                        rect.startX = e.pageX - this.offsetLeft;
+                                        rect.startY = e.pageY - this.offsetTop;
+                                        drag = true;
+                                    });
+
+                                    canvas.addEventListener('mouseup', function() {
+                                        drag = false;
+                                        // drawOverlay(context, rect);
+                                        // TODO: Crop the canvas based on rect.startX, rect.startY, rect.w, rect.h
+                                    });
+
+                                    canvas.addEventListener('mousemove', function(e) {
+                                        if (drag) {
+                                            rect.w = (e.pageX - this.offsetLeft) - rect.startX;
+                                            rect.h = (e.pageY - this.offsetTop) - rect.startY;
+                                            // context.clearRect(0, 0, canvas.width, canvas.height);
+                                            context.fillRect(rect.startX, rect.startY, rect.w, rect.h);
+                                            // drawOverlay(context, rect);
+                                        }
+                                    });
+
+                                    // Render the page into the canvas
+                                    var renderContext = {
+                                        canvasContext: context,
+                                        viewport: viewport
+                                    };
+
+                                    page.render(renderContext).promise.then(() => {
+                                        console.log(`Page ${pageNumber} rendered`);
+                                    });
+
+
+                                });
+                            }
+                            // var uploadDiv = document.getElementById('upload');
+                            // // Left and Right navigation buttons
+                            // const leftButton = document.createElement('button');
+                            // leftButton.classList.add('button');
+                            // leftButton.setAttribute('id', 'left-button');
+                            // leftButton.innerText = '←';
+                            // leftButton.addEventListener('click', () => goToPreviousPage());
+                            // uploadDiv.appendChild(leftButton);
+
+                            // const rightButton = document.createElement('button');
+                            // rightButton.classList.add('button');
+                            // rightButton.setAttribute('id', 'right-button');
+                            // rightButton.innerText = '→';
+                            // rightButton.addEventListener('click', () => goToNextPage());
+                            // uploadDiv.appendChild(rightButton);
+                        }
+                        // // Function to render all pages
+                        // function renderPages(pdfDoc) {
+                        //     for (let i = 1; i <= pdfDoc.numPages; i++) {
+                        //         renderPage(pdfDoc, i);
+                        //     }
+                        // }
+
+//                         In JavaScript, there's no built-in way to listen for changes to a simple variable. However, you can achieve this by using a getter and setter for an object property, or by using a JavaScript Proxy.
+
+// Here's an example using a getter and setter:
+
+
+                        let _currentPage = 1; // _currentPage is the "real" variable
+
+                        Object.defineProperty(window, 'currentPage', {
+                            get() {
+                                return _currentPage;
+                            },
+                            set(value) {
+                                _currentPage = value;
+                                // The variable has changed, run your code here
+                                console.log(`currentPage has been set to ${value}`);
+                            }
+                        });
+
+//                         In this example, currentPage is a property of the window object. When you get or set currentPage, it actually gets or sets _currentPage, and when you set currentPage, it also logs a message.
+
+// Here's an example using a Proxy:
+
+                        let currentPage = new Proxy({ value: 1 }, {
+                            set(target, property, value) {
+                                target[property] = value;
+                                // The variable has changed, run your code here
+                                console.log(`currentPage has been set to ${value}`);
+                                return true;
+                            }
+                        });
+
+//                         In this example, currentPage is a Proxy for an object with a value property. When you set currentPage.value, it also logs a message.
+
+// Please note that these examples are not equivalent to a simple variable, and you need to access the value with currentPage.value instead of just currentPage. Also, these examples log a message when the variable changes, but you can replace this with your own code.
+
+                        renderPages(pdfDoc);
+
+                        var scrollDiv = document.getElementById('scroll-pdf-div');
+                        const pageNumberText = document.createElement('div');
+                        pageNumberText.classList.add('page-number-text');
+                        // pageNumberText.contentEditable = 'true';
+                        pageNumberText.innerText = 'Page 1 of ' + pdfDoc.numPages;
+                        //document.getElementById('upload').insertBefore(pageNumberText, scrollDiv);
+                        // const pageNumberInput = document.createElement('input');
+                        // pageNumberInput.classList.add('page-number-input');
+                        // pageNumberInput.setAttribute('id', 'page-number-input');
+                        // pageNumberInput.type = 'number';
+                        // pageNumberInput.min = 1;
+                        // pageNumberInput.max = pdfDoc.numPages;
+                        // pageNumberInput.value = 1;
+                        // pageNumberInput.addEventListener('change', () => goToEnteredPage());
+                        const pageNumberInput = document.createElement('textarea');
+                        pageNumberInput.classList.add('page-number-input');
+                        pageNumberInput.setAttribute('id', 'page-number-input');
+                        pageNumberInput.rows = 1;
+                        pageNumberInput.cols = 1;
+                        pageNumberInput.innerText = 1;
+                        pageNumberInput.addEventListener('change', () => goToEnteredPage());
+
+
+                        // Menu Div for text and buttons
+                        var menuDiv = document.createElement('div');
+                        menuDiv.classList.add('menu-div');
+                        document.getElementById('upload').insertBefore(menuDiv, scrollDiv);
+
+                        // Function to update the page number text based on scroll position
+                        scrollDiv.addEventListener('scroll', () => {
+                            const pages = document.querySelectorAll('.pdf-page');
+                            const pageHeight = pages[0].clientHeight; // Assuming all pages are the same height
+                            console.log(pageHeight);
+                            console.log(pages);
+                            // Calculate the current page based on scroll position
+                            const currentPage = Math.floor(scrollDiv.scrollTop / pageHeight);
+
+                            // Update the active class based on scroll position
+                            pages.forEach((page, index) => {
+                                console.log(index);
+                                console.log(page, 12);
+                                if (index === currentPage) {
+                                    page.classList.add('active');
+                                } else {
+                                    page.classList.remove('active');
+                                }
+                            });
+                            pageNumberInput.value = currentPage + 1;
+                            // Update the page number text
+                            pageNumberText.innerHTML = 'Page <span id="page-number" contentEditable="true">' + pageNumberInput.value + '</span> of ' + pdfDoc.numPages;
+                            // pageNumberText.innerText = 'Page ' + (pageNumberInput) + ' of ' + pdfDoc.numPages;
+                            document.getElementById('page-number').addEventListener('change', function() {
+                                goToPage(parseInt(this.innerText));
+                            });
+                        });
+
+                        var uploadDiv = document.getElementById('upload');
+                        
+                        // Menu Div
+                        // Left and Right navigation buttons
+                        const leftButton = document.createElement('button');
+                        leftButton.classList.add('button');
+                        leftButton.setAttribute('id', 'left-button');
+                        leftButton.innerText = '←';
+                        leftButton.addEventListener('click', () => goToPreviousPage());
+                        //uploadDiv.appendChild(leftButton);
+
+                        const rightButton = document.createElement('button');
+                        rightButton.classList.add('button');
+                        rightButton.setAttribute('id', 'right-button');
+                        rightButton.innerText = '→';
+                        rightButton.addEventListener('click', () => goToNextPage());
+                        //uploadDiv.appendChild(rightButton);
+
+                        menuDiv.appendChild(leftButton);
+                        menuDiv.appendChild(pageNumberText);
+                        menuDiv.appendChild(rightButton);
+                        menuDiv.style.display = 'flex';
+                        menuDiv.style.justifyContent = 'space-between';
+                        menuDiv.style.alignItems = 'center';
+                        leftButton.style.display = 'none';
+                        rightButton.style.display = 'none';
+                        pageNumberText.style.display = 'none';
+                        // menuDiv.style.padding = '10px 15px 10px 25px';
+                        // menuDiv.style.width = '30%';
+
+                        // body.style.overflow = 'hidden';
+                        // Go to the next page
+                        function goToNextPage() {
+                            console.log(43);
+                            let currentPageDiv = document.querySelector('.pdf-page.active');
+                            console.log(currentPageDiv);
+                            let nextPageNumber = parseInt(currentPageDiv.getAttribute('data-page-number')) + 1;
+                            console.log(5478236);
+                            let nextPageDiv = document.querySelector('.pdf-page[data-page-number="' + nextPageNumber + '"]');
+                            console.log(54665);
+                            console.log(nextPageDiv);
+                            
+                            if (nextPageDiv) {
+                                console.log(543);
+                                currentPageDiv.classList.remove('active');
+                                nextPageDiv.classList.add('active');
+                                // scrollDiv.scrollTop = nextPageDiv.offsetTop;
+                                nextPageDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                // const currPageHeight = currentPageDiv.clientHeight;
+                                // scrollDiv.scrollTop = currPageHeight * (nextPageNumber-1);
+                            }
+                        }
+
+                        // Go to the previous page
+                        function goToPreviousPage() {
+                            let currentPageDiv = document.querySelector('.pdf-page.active');
+                            let previousPageNumber = parseInt(currentPageDiv.getAttribute('data-page-number')) - 1;
+                            let previousPageDiv = document.querySelector('.pdf-page[data-page-number="' + previousPageNumber + '"]');
+                            
+                            if (previousPageDiv) {
+                                currentPageDiv.classList.remove('active');
+                                previousPageDiv.classList.add('active');
+                                const currPageHeight = currentPageDiv.clientHeight;
+                                // scrollDiv.scrollTop = previousPageDiv.offsetTop;// - 150;
+                                // scrollDiv.scrollTop = currPageHeight * (previousPageNumber-1);
+                                previousPageDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }
+
+                        // Go to a specific page
+                        function goToPage(pageNumber) {
+                            let currentPageDiv = document.querySelector('.pdf-page.active');
+                            let targetPageDiv = document.querySelector('.pdf-page [data-page-number="' + pageNumber + '"]');
+                            
+                            if (targetPageDiv) {
+                                currentPageDiv.classList.remove('active');
+                                targetPageDiv.classList.add('active');
+                                // scrollDiv.scrollTop = nextPageDiv.offsetTop;
+                                targetPageDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }
+
+                        // Function to go to a specific page entered by the user
+                        function goToEnteredPage() {
+                            const pageNumberInput = document.getElementById('page-number-input');
+                            const enteredPageNumber = parseInt(pageNumberInput.value);
+
+                            if (!isNan(enteredPageNumber) && enteredPageNumber >= 1 && enteredPageNumber <= pdfDoc.numPages) {
+                                // Go to the entered page
+                                goToPage(enteredPageNumber);
+                            } else {
+                                alert('Please enter a valid page number');
+                            }
+                        }
+
+                        // Function to draw a transparent rectangle on the canvas
+                        function drawOverlay(context, rect) {
+                            context.beginPath();
+                            context.rect(rect.startX, rect.startY, rect.w, rect.h);
+                            context.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                            context.fill();
+                        }
+                        // Function to handle scrolling through pages
+                        // function changePage(delta) {
+                        //     const newPage = currentPage + delta;
+
+                        //     if (newPage >= 1 && newPage <= pdfDoc.numPages) {
+                        //         currentPage = newPage;
+                        //         renderPage(pdfDoc, currentPage);
+                        //     }
+                        // }
+
+                        // Event listeners for scrolling through pages
+                        // document.addEventListener('keydown', e => {
+                        //     if (e.code === 'ArrowUp' || e.code === 'ArrowLeft') {
+                        //         changePage(-1);
+                        //     } else if (e.code === 'ArrowDown' || e.code === 'ArrowRight') {
+                        //         changePage(1);
+                        //     }
+                        // });
+
+
+                    // // Handle mouse events to select a rectangle to crop
+                    // // var canvas = document.getElementById() //('upload');//pdf-canvas
+                    // var canvas = document.querySelector('.pdf-page.active canvas');
+                    // var context = canvas.getContext('2d');
+                    // var rect = {};
+                    // var drag = false;
+
+                    // canvas.addEventListener('mousedown', function(e) {
+                    //     rect.startX = e.pageX - this.offsetLeft;
+                    //     rect.startY = e.pageY - this.offsetTop;
+                    //     drag = true;
+                    // });
+
+                    // canvas.addEventListener('mouseup', function() {
+                    //     drag = false;
+                    //     // TODO: Crop the canvas based on rect.startX, rect.startY, rect.w, rect.h
+                    // });
+
+                    // canvas.addEventListener('mousemove', function(e) {
+                    //     if (drag) {
+                    //         rect.w = (e.pageX - this.offsetLeft) - rect.startX;
+                    //         rect.h = (e.pageY - this.offsetTop) - rect.startY;
+                    //         context.clearRect(0, 0, canvas.width, canvas.height);
+                    //         context.fillRect(rect.startX, rect.startY, rect.w, rect.h);
+                    //     }
+                    // });
+
+                    }).catch(err => {
+                        console.error('Error loading PDF document:', err);
+                    });
+                }
+        });
+        // Add the file input element to the body
+            // This is necessary for the click event to work
+            document.body.appendChild(fileInput);
+
+            // Trigger the click event
+            fileInput.click();
+
+            // Remove the file input element after the dialog is opened
+            // This is necessary to ensure that a new file input element is created each time
+            fileInput.parentNode.removeChild(fileInput);
+    });
+    </script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
