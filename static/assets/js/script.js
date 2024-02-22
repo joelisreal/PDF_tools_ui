@@ -27,10 +27,6 @@ var addMoreFilesFunctionalityExecuted = false;
 // Handle dropped files
 dropArea.addEventListener('drop', handleDrop, false);
 
-// var content = document.getElementById('dropArea');
-//     var sideTools = document.createElement('div');
-//     sideTools.classList.add('side-tools');
-//     content.appendChild(sideTools);
 
 function handleDrop(e) {
     e.preventDefault();
@@ -52,26 +48,6 @@ function handleDrop(e) {
         compressFunctionality(objectUrls);
         addMoreFilesFunctionalityExecuted = true;
     }
-    
-    // var content = document.getElementById('upload');
-    // var sideTools = document.createElement('div');
-    // sideTools.classList.add('side-tools');
-    // content.appendChild(sideTools);
-
-    // // var compressPdf = 
-    // var addMoreFiles = document.getElementById('add-more-files');
-    // addMoreFiles.style.display = 'block';
-    // // addMoreFiles.style.border = "dashed blue";
-    // var spanTxt = document.createElement('span');
-    // spanTxt.classList.add('tooltip');
-    // spanTxt.setAttribute('id', 'side-tools-upload-txt');
-    // spanTxt.appendChild(document.createTextNode('Add more files'));
-    // // sideTools.appendChild(spanTxt);
-    // // Make sure tooltip is after the button as sibling elements
-    // sideTools.appendChild(addMoreFiles);
-    // sideTools.appendChild(spanTxt);
-
-    // sideTools.style.border = "dashed green";
 
     // Handle dropped files
     const files = e.dataTransfer.files;
@@ -100,13 +76,7 @@ var addMoreFiles = document.getElementById('add-more-files');
 document.getElementById('add-more-files').addEventListener('click', function() {
     fileAdderButton(addMoreFiles);
 });
-// var fileAdderButtons = document.getElementsByClassName('file-adder');
 
-// for (var i = 0; i < fileAdderButtons.length; i++) {
-//     fileAdderButtons[i].addEventListener('click', function() {
-//         fileAdderButton(this);
-//     });
-// }
 // Function to add a file input element to the page and trigger a click event
 function fileAdderButton(filesClick) {
 // Create a new file input element
@@ -121,10 +91,6 @@ fileInput.style.display = 'none';
 // Add an event listener for when a file is selected
 fileInput.addEventListener('change', function(e) {
     // // TODO: Handle the file selection
-    // var file = e.target.files[0];
-    // // TODO: Handle the file selection
-    // var file = e.target.files[0];
-    // if (filesClick === document.getElementById('pickfiles')) {
         if (!addMoreFilesFunctionalityExecuted) {
             addMoreFilesFunctionality();
             // Need to pass object url to compress call
@@ -162,26 +128,9 @@ fileInput.addEventListener('change', function(e) {
     fileInput.parentNode.removeChild(fileInput);
 }
 
-// document.getElementById('compress-pdf').addEventListener('click', function() {
-//     callCompressPdf();
-// });
-// function compressFunctionality() {
-//     var compressBtn = document.createElement('a');
-//     compressBtn.setAttribute('id', 'compress-pdf');
-//     compressBtn.setAttribute('href', 'javascript:;');
 
-//     var content = document.getElementById('dropArea');
-//     content.appendChild(compressBtn);
     
-//     var spanTxt = document.createElement('span');
-//     // spanTxt.setAttribute(createTextNode('Compress PDF')); 
-//     spanTxt.appendChild(document.createTextNode('Compress PDF'));
-//     compressBtn.appendChild(spanTxt);
-// }
 
-// function callCompressPdf() {
-
-// }
 // functionality for add more files button including hover with tooltip
 function addMoreFilesFunctionality() {
     var content = document.getElementById('dropArea');
@@ -197,7 +146,6 @@ function addMoreFilesFunctionality() {
     spanTxt.classList.add('tooltip');
     spanTxt.setAttribute('id', 'side-tools-upload-txt');
     spanTxt.appendChild(document.createTextNode('Add more files'));
-    // sideTools.appendChild(spanTxt);
     // Make sure tooltip is after the button as sibling elements
     sideTools.appendChild(addMoreFiles);
     sideTools.appendChild(spanTxt);
@@ -251,7 +199,6 @@ function fileHandler(file) {
                                         pageDiv.classList.add('active');
                                     }
                                     pageDiv.classList.add('file-selected');
-                                    // scrollDiv.appendChild(pageDiv);
                                     uploadDiv.appendChild(pageDiv);
                                     
 
@@ -267,17 +214,8 @@ function fileHandler(file) {
                                     span.classList.add('exit-button');
                                     span.appendChild(document.createTextNode('X'));
                                     pageDiv.appendChild(span);
-                                    // pageDiv.style.display = 'flex';
-                                    // pageDiv.style.flexDirection = 'column';
-                                    // span.style.order = '-1';
-                                    // span.style.alignSelf = 'flex-end';
-                                    // // span.style.b
                                     span.addEventListener('click', function() {
                                         pageDiv.remove();
-                                        // uploadDiv.classList.remove('file-selected');
-                                        // toolHeader.style.display = 'block';
-                                        // document.getElementById('pickfiles').style.display = 'block';
-                                        // document.querySelector('.upload-droptxt').style.display = 'block';
                                     });
 
                                     // Render the page into the canvas
