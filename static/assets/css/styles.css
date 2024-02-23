@@ -208,12 +208,6 @@ nav ul li a {
     height: 410px;
 }
 
-/* canvas.file-selected {
-    background-color: aquamarine;
-    height: 100%;
-    border: dashed green;
-    /* display: none; 
-} */
 
 canvas {
     background-color: aquamarine;
@@ -225,10 +219,6 @@ canvas {
     display: none;
 }
 
-/* .tool-header {
-    border: dashed red;
-    padding: 6px 24px 10px;
-} */
 .tool-header {
     text-align: center;
 }
@@ -268,23 +258,5 @@ canvas {
     color: #fff; /* Change text color */
 }
 
-
-/* #scroll-pdf-div {
-    overflow-y: scroll;
-} */
-/*
-#upload {
-    position: relative;
-    width: 600px; /* Set to the width you want 
-    height: 800px; /* Set to the height you want 
-    overflow: hidden;
-}
-
-#upload iframe {
-    position: absolute;
-    top: -50px; /* Adjust as needed 
-    left: -50px; /* Adjust as needed 
-}
-*/
 
 

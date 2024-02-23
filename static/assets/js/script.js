@@ -234,15 +234,6 @@ function fileHandler(file) {
                         }
                         renderPage(pdfDoc);
                   
-                        // var content = document.getElementById('dropArea');
-                        // var sideTools = document.createElement('div');
-                        // sideTools.classList.add('side-tools');
-                        // content.appendChild(sideTools);
-
-                        // // var compressPdf = 
-                        // var addMoreFiles = document.getElementById('add-more-files');
-                        // addMoreFiles.style.display = 'block';
-                        // addMoreFiles.style.border = "dashed blue"
 
                     }).catch(err => {
                         console.error('Error loading PDF document:', err);
