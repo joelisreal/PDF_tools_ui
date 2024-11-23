@@ -55,9 +55,10 @@ function handleDrop(e) {
         if (file.type === 'application/pdf') {
             fileHandler(file);
             console.log(file);
-            uploadFile(file);
+            // uploadFile(file);
         }
     }
+    uploadFile(Array.from(files));
 
 }
 
@@ -112,9 +113,10 @@ fileInput.addEventListener('change', function(e) {
     for (const file of files) {
         if (file.type === 'application/pdf') {
             fileHandler(file);
-            uploadFile(file);
+            // uploadFile(file);
         }
     }
+    uploadFile(Array.from(files));
 });
 // Add the file input element to the body
     // This is necessary for the click event to work
@@ -257,20 +259,47 @@ function displayPDF(file) {
 }
 
 // File upload logic
-function uploadFile(file) {
-    console.log(file);
-    var formData = new FormData();
-    formData.append('file', file);
+function uploadFile(files) {
+    let uploadedFilesCount = 0;
+    let totalFiles = files.length;
+    let uploadErrors = [];
 
-    $.ajax({
-        type: 'POST',
-        url: '/upload',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function (data) {
-            // alert(data);
-        }
+    files.forEach(file => {
+        var formData = new FormData();
+        formData.append('file', file);
+
+    
+        $.ajax({
+            type: 'POST',
+            url: '/upload',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                // Increment the uploadFilesCount on successful upload
+                uploadedFilesCount++;
+                // Show an alert with the response message
+                console.log(data);
+
+                // If all files are uploaded, show a success alert
+                if (uploadedFilesCount === totalFiles) {
+                    alert(`Successfully uploaded ${totalFiles} file(s)!`);
+                }
+                // alert(data.message); // Assuming the response is a JSON object with a message field
+                console.log("Uploaded file:", data.filename);
+            },
+            error: function (err) {
+                // Handle the error and store it in an array
+                uploadErrors.push(err);
+                // alert("File upload failed.");
+                console.error(err);
+                
+                // If all files have been processed and there was an error, show a general alert
+                if (uploadedErrors.length > 0 && uploadedFilesCount === totalFiles) {
+                    alert('File upload failed. Please try again.');
+                }
+            }
+        });
     });
 }
 

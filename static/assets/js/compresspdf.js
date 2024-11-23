@@ -20,8 +20,11 @@ function compressFunctionality(objectUrls) {
 
 function callCompressPdf(objectUrls) {
     // Send a GET request to the /compress endpoint when button clicked
-    // $.get('/compress', function (data) {
-    //     // alert(data);
-    // });
-    window.location.href = '/compress';
+    $.get('/compress', function (data) {
+        alert("Compressed PDF is ready for download");
+        if (data.redirect_to) {
+            window.location.href = data.redirect_to;
+        }
+    });
+    // window.location.href = '/compress';
 }

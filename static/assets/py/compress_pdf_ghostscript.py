@@ -1,8 +1,8 @@
 import subprocess
 import sys
-from pdf import input_paths
 
-def compress_pdf_with_ghostscript(input_paths, output_paths):
+def compress_pdf_with_ghostscript(input_path, output_path):
+    
     gs_command = [
         'gswin64c',
         '-sDEVICE=pdfwrite',
@@ -20,15 +20,3 @@ def compress_pdf_with_ghostscript(input_paths, output_paths):
     except subprocess.CalledProcessError as e:
         print(f"Error occurred during PDF compression: {e}")
 
-# if __name__ == "__main__":
-    # input_paths = sys.argv[1:]
-print(input_paths)
-output_paths = [f"output_{i}.pdf" for i in range(len(input_paths))]
-
-for (input_path, output_path) in zip(input_paths, output_paths):
-    compress_pdf_with_ghostscript(input_path, output_path)
-
-# Example usage
-# input_file = 'PSET 2.pdf'
-# output_file = 'output_compressed_gs.pdf'
-# compress_pdf_with_ghostscript(input_file, output_file)

@@ -1,10 +1,12 @@
+import threading
 from flask import Flask, render_template, request, redirect, session, url_for, send_file, send_from_directory, after_this_request, flash, Response, jsonify
 import sqlite3
+import time
 import os
 from flask_sqlalchemy import SQLAlchemy
 import subprocess
 import zipfile
-from compress_pdf_ghostscript import compress_pdf_with_ghostscript
+from static.assets.py.compress_pdf_ghostscript import compress_pdf_with_ghostscript
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///files.db'
@@ -41,30 +43,39 @@ def pdf_compress():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    file = request.files['file']
-    print(file)
-    # Save file on the server
-    file_path = os.path.join('uploads', file.filename)
-    file.save(file_path)
-    session['filename'] = file.filename
-    # Save file info in the database
-    file_data = File(filename=file.filename, filepath=file_path, compressed_filepath='', status='uploaded')
-    db.session.add(file_data)
-    db.session.commit()
-    # flash('File upload a success!', 'info')
-    # return 'File uploaded successfully 456!'
-    # return render_template('pdfcompress.html')
-    return redirect('/')
+    try:
+        file = request.files['file']
+        if not file:
+            return jsonify({"error": "No file uploaded"}), 400
+
+        # Save the file on the server
+        if not os.path.exists('uploads'):
+            os.makedirs('uploads')
+
+        file_path = os.path.join('uploads', file.filename)
+        file.save(file_path)
+        session['filename'] = file.filename
+
+        # Save file info in the database
+        file_data = File(filename=file.filename, filepath=file_path, compressed_filepath='', status='uploaded')
+        db.session.add(file_data)
+        db.session.commit()
+
+        return jsonify({"message": "File uploaded successfully!", "filename": file.filename})
+
+    except Exception as e:
+        # Catch any unexpected errors
+        return jsonify({"error": f"File upload failed: {str(e)}"}), 500
 
 
 @app.route('/compress')
 def compress():
     # Get files to compress from the database
-    
     filename = session['filename']
     file_data = File.query.filter_by(filename=filename).first()
     print(file_data.filepath)
     print(file_data.filename)
+    print(file_data)
     # Compress files and update the database
     if not os.path.exists('compressed'):
         os.makedirs('compressed')
@@ -72,17 +83,18 @@ def compress():
     # Append _gs to the filename
     output_file = os.path.join('compressed', file_data.filename.split('.')[0] + '_gs.pdf')
     print(output_file)
+    print(file_data)
     compress_pdf_with_ghostscript(file_data.filepath, output_file)
     file_data.status = 'compressed'
     db.session.commit()
     # return 'Compression complete!'
     # return render_template('pdfdownload.html')
-    return redirect(url_for('download'))
+    # return redirect(url_for('download'))
+    return jsonify({'redirect_to': url_for('download')})
 
 
 @app.route('/download')
 def download():
-    print(76)
     return render_template('pdfdownload.html')
 
 @app.route('/download_all')
@@ -93,7 +105,7 @@ def download_all():
 
     # Get the list of compressed files
     compressed_files = os.listdir(compressed_dir)
-    
+    print(compressed_files)
     # Get the list of uploaded files
     upload_files = os.listdir(upload_dir)
 
@@ -114,14 +126,16 @@ def download_all():
     for file in compressed_files:
         os.remove(os.path.join(compressed_dir, file))
 
-    # After this request, delete the zip file
-    @after_this_request
-    def remove_file(response):
+     # Function to delete the zip file after the response is sent
+    def delete_zip_file():
+        time.sleep(3)  # Wait for a moment to ensure file is fully sent
         try:
             os.remove('AllFiles.zip')
         except Exception as error:
-            app.logger.error("Error removing or closing downloaded file handle", error)
-        return response
+            app.logger.error(f"Error removing or closing downloaded file handle: {error}")
+
+    # Start the background thread to delete the zip file
+    threading.Thread(target=delete_zip_file).start()
 
     # Send the zip file for download
     return send_file('AllFiles.zip', as_attachment=True)
