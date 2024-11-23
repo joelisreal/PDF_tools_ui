@@ -48,7 +48,11 @@ def upload():
         if not file:
             return jsonify({"error": "No file uploaded"}), 400
 
-        # Save the file on the server
+        # Check if the file already exists in the database
+        existing_file = File.query.filter_by(filename=file.filename).first()
+        if existing_file:
+            return jsonify({"error": "File already uploaded"}), 400
+        # Save the file on the servers
         if not os.path.exists('uploads'):
             os.makedirs('uploads')
 
@@ -60,6 +64,12 @@ def upload():
         file_data = File(filename=file.filename, filepath=file_path, compressed_filepath='', status='uploaded')
         db.session.add(file_data)
         db.session.commit()
+            # Query all the entries in the File model
+        files = File.query.all()
+        
+        # Print each file entry in the console
+        for file in files:
+            print(f"ID: {file.id}, Filename: {file.filename}, Status: {file.status}")
 
         return jsonify({"message": "File uploaded successfully!", "filename": file.filename})
 
@@ -71,22 +81,34 @@ def upload():
 @app.route('/compress')
 def compress():
     # Get files to compress from the database
-    filename = session['filename']
-    file_data = File.query.filter_by(filename=filename).first()
-    print(file_data.filepath)
-    print(file_data.filename)
-    print(file_data)
+    # filename = session['filename']
+    # file_data = File.query.filter_by(filename=filename).first()
+    # print(file_data.filepath)
+    # print(file_data.filename)
+    # print(file_data)
+    # Get all files to compress from the database
+    files_to_compress = File.query.filter_by(status='uploaded').all()
+
+    # Check if there are files to compress
+    if not files_to_compress:
+        return jsonify({"error": "No files to compress"}), 400
+    
     # Compress files and update the database
     if not os.path.exists('compressed'):
         os.makedirs('compressed')
-    
-    # Append _gs to the filename
-    output_file = os.path.join('compressed', file_data.filename.split('.')[0] + '_gs.pdf')
-    print(output_file)
-    print(file_data)
-    compress_pdf_with_ghostscript(file_data.filepath, output_file)
-    file_data.status = 'compressed'
-    db.session.commit()
+
+    # Compress each file
+    for file_data in files_to_compress:
+        # Append _gs to the filename for the compressed file
+        output_file = os.path.join('compressed', file_data.filename.split('.')[0] + '_gs.pdf')
+        
+        # Compress the file
+        compress_pdf_with_ghostscript(file_data.filepath, output_file)
+
+        # Update the database with the compressed file path and status
+        file_data.compressed_filepath = output_file
+        file_data.status = 'compressed'
+        db.session.commit()
     # return 'Compression complete!'
     # return render_template('pdfdownload.html')
     # return redirect(url_for('download'))
@@ -125,6 +147,10 @@ def download_all():
         os.remove(os.path.join(upload_dir, file))
     for file in compressed_files:
         os.remove(os.path.join(compressed_dir, file))
+
+    # Clear the database
+    File.query.delete()
+    db.session.commit()
 
      # Function to delete the zip file after the response is sent
     def delete_zip_file():
