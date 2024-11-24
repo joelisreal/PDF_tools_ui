@@ -1,4 +1,6 @@
-function compressFunctionality(objectUrls) {
+import { state } from './modules/state.js';
+
+export function compressFunctionality(objectUrls) {
     var compressBtn = document.createElement('a');
     compressBtn.setAttribute('id', 'compress-pdf');
     compressBtn.setAttribute('href', 'javascript:;');
@@ -11,7 +13,7 @@ function compressFunctionality(objectUrls) {
     spanTxt.appendChild(document.createTextNode('Compress PDF'));
     compressBtn.appendChild(spanTxt);
 
-    compressBtnStatus = true;
+    state.compressBtnStatus = true;
 
     document.getElementById('compress-pdf').addEventListener('click', function() {
         callCompressPdf(objectUrls);

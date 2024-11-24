@@ -44,34 +44,35 @@ def pdf_compress():
 @app.route('/upload', methods=['POST'])
 def upload():
     try:
-        file = request.files['file']
-        if not file:
-            return jsonify({"error": "No file uploaded"}), 400
+        files = request.files.getlist('files')
+        print(files)
+        print(5)
+        if not files:
+            return jsonify({"error": "No files uploaded"}), 400
 
-        # Check if the file already exists in the database
-        existing_file = File.query.filter_by(filename=file.filename).first()
-        if existing_file:
-            return jsonify({"error": "File already uploaded"}), 400
-        # Save the file on the servers
-        if not os.path.exists('uploads'):
-            os.makedirs('uploads')
+        for file in files:
+            existing_file = File.query.filter_by(filename=file.filename).first()
+            if existing_file:
+                return jsonify({"error": f"File {file.filename} already uploaded"}), 400
 
-        file_path = os.path.join('uploads', file.filename)
-        file.save(file_path)
-        session['filename'] = file.filename
+            if not os.path.exists('uploads'):
+                os.makedirs('uploads')
 
-        # Save file info in the database
-        file_data = File(filename=file.filename, filepath=file_path, compressed_filepath='', status='uploaded')
-        db.session.add(file_data)
+            file_path = os.path.join('uploads', file.filename)
+            file.save(file_path)
+
+            file_data = File(filename=file.filename, filepath=file_path, compressed_filepath='', status='uploaded')
+            db.session.add(file_data)
+
         db.session.commit()
-            # Query all the entries in the File model
+        # Query all the entries in the File model
         files = File.query.all()
         
         # Print each file entry in the console
         for file in files:
             print(f"ID: {file.id}, Filename: {file.filename}, Status: {file.status}")
 
-        return jsonify({"message": "File uploaded successfully!", "filename": file.filename})
+        return jsonify({"message": f"{len(files)} files uploaded successfully!"})
 
     except Exception as e:
         # Catch any unexpected errors
@@ -80,12 +81,6 @@ def upload():
 
 @app.route('/compress')
 def compress():
-    # Get files to compress from the database
-    # filename = session['filename']
-    # file_data = File.query.filter_by(filename=filename).first()
-    # print(file_data.filepath)
-    # print(file_data.filename)
-    # print(file_data)
     # Get all files to compress from the database
     files_to_compress = File.query.filter_by(status='uploaded').all()
 
@@ -109,9 +104,6 @@ def compress():
         file_data.compressed_filepath = output_file
         file_data.status = 'compressed'
         db.session.commit()
-    # return 'Compression complete!'
-    # return render_template('pdfdownload.html')
-    # return redirect(url_for('download'))
     return jsonify({'redirect_to': url_for('download')})
 
 
@@ -127,9 +119,6 @@ def download_all():
 
     # Get the list of compressed files
     compressed_files = os.listdir(compressed_dir)
-    print(compressed_files)
-    # Get the list of uploaded files
-    upload_files = os.listdir(upload_dir)
 
     # Create a zip file
     zipf = zipfile.ZipFile('AllFiles.zip', 'w', zipfile.ZIP_DEFLATED)
@@ -138,34 +127,52 @@ def download_all():
         # Add the file to the zip file
         # The arcname parameter is used to store the file under its filename only, not the full path
         zipf.write(os.path.join(compressed_dir, file), arcname=file)
-        # for file in files:
-            # zipf.write(os.path.join(root, file))
     zipf.close()
 
-    # Delete the files in the upload and compressed directories
-    for file in upload_files:
-        os.remove(os.path.join(upload_dir, file))
-    for file in compressed_files:
-        os.remove(os.path.join(compressed_dir, file))
-
-    # Clear the database
-    File.query.delete()
-    db.session.commit()
-
-     # Function to delete the zip file after the response is sent
-    def delete_zip_file():
-        time.sleep(3)  # Wait for a moment to ensure file is fully sent
-        try:
-            os.remove('AllFiles.zip')
-        except Exception as error:
-            app.logger.error(f"Error removing or closing downloaded file handle: {error}")
-
-    # Start the background thread to delete the zip file
-    threading.Thread(target=delete_zip_file).start()
 
     # Send the zip file for download
     return send_file('AllFiles.zip', as_attachment=True)
 
+@app.after_request
+def after_request(response):
+    """Performs cleanup after each response, only if appropriate."""
+    if request.endpoint in ['download_all']:
+        clean_up_files_and_db()
+    return response
+
+def clean_up_files_and_db():
+    """Deletes all files in the upload and compressed directories and clears the database."""
+    try:
+        # Remove files from the filesystem
+        upload_dir = 'uploads'
+        compressed_dir = 'compressed'
+
+        # Delete uploaded files
+        for file in os.listdir(upload_dir):
+            os.remove(os.path.join(upload_dir, file))
+
+        # Delete compressed files
+        for file in os.listdir(compressed_dir):
+            os.remove(os.path.join(compressed_dir, file))
+
+        # Function to delete the zip file after the response is sent
+        def delete_zip_file():
+            time.sleep(3)  # Wait for a moment to ensure file is fully sent
+            try:
+                os.remove('AllFiles.zip')
+            except Exception as error:
+                app.logger.error(f"Error removing or closing downloaded file handle: {error}")
+
+        # Start the background thread to delete the zip file
+        threading.Thread(target=delete_zip_file).start()
+        
+        # Clear the database
+        File.query.delete()
+        db.session.commit()
+        print("Files and database cleared successfully.")
+
+    except Exception as error:
+        print(f"Error clearing files and database: {error}")
 
 if __name__ == '__main__':
     # db.create_all()
