@@ -1,4 +1,3 @@
-// uiManager.js
 export class UIManager {
     static addMoreFilesFunctionality() {
         const content = document.getElementById('dropArea');

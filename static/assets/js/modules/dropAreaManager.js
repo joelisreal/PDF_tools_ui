@@ -1,4 +1,3 @@
-// dropAreaManager.js
 import { state } from './state.js';
 import { UIManager } from './uiManager.js';
 import { PDFHandler } from './pdfHandler.js';

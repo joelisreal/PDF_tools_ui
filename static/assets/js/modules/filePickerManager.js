@@ -1,17 +1,20 @@
-// filePickerManager.js
 import { state } from './state.js';
 import { UIManager } from './uiManager.js';
 import { PDFHandler } from './pdfHandler.js';
 import { FileUploader } from './fileUploader.js';
-import { compressFunctionality } from '../compresspdf.js';
+import { compressFunctionality } from './compresspdf.js';
 
+// Define the FilePickerManager class to handle file picking functionality
 export class FilePickerManager {
+    // Initialize file pickers by adding event listeners to buttons for picking files
     static initializeFilePickers() {
+        // Get the "pickfiles" (upload) button element and attach a click event to trigger file picker
         const pickFiles = document.getElementById('pickfiles');
         if (pickFiles) {
             pickFiles.addEventListener('click', () => this.fileAdderButton(pickFiles));
         }
 
+        // Get the "add-more-files" button element button and attach an event listener for adding more files
         const addMoreFiles = document.getElementById('add-more-files');
         addMoreFiles.addEventListener('click', () => this.fileAdderButton(addMoreFiles));
     }

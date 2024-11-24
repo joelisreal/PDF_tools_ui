@@ -1,4 +1,3 @@
-// pdfHandler.js
 import { WORKER_URL } from './constants.js';
 
 export class PDFHandler {

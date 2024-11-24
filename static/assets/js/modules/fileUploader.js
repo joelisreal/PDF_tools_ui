@@ -1,4 +1,3 @@
-// fileUploader.js
 export class FileUploader {
     static uploadFile(files) {
         const formData = new FormData();

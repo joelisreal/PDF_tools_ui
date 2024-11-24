@@ -9,7 +9,6 @@
     </div>
     <div id = "upload" class = "upload">
         <a class="button-upload tooltip--left active" id="pickfiles" href="javascript:;" title="Add more files" style="position: relative; z-index: 1;">
-            <!-- <svg id="add-more-files" xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke-linecap="round" stroke-width="2" stroke="#fff" fill="none" stroke-linejoin="round"><desc>Upload your file and transform it.</desc><path d="M10 1.833v16.333"></path><path d="M1.833 10h16.333"></path></svg> -->
             <span>Select PDF files</span>
         </a>
         <div class="upload-droptxt">or drop PDFs here</div>
@@ -18,6 +17,6 @@
 {% endblock %}
 {% block scripts %}
 <script type="module" src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
-<script type="module" src="{{ url_for('static', filename='assets/js/compresspdf.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='assets/js/modules/compresspdf.js') }}"></script>
 {% endblock %}
 
