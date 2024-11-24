@@ -94,11 +94,29 @@ def compress():
 
     # Compress each file
     for file_data in files_to_compress:
-        # Append _gs to the filename for the compressed file
+        # Original file path
+        original_file = file_data.filepath
+
+        # Append _gs to the filename for the compressed file path
         output_file = os.path.join('compressed', file_data.filename.split('.')[0] + '_gs.pdf')
         
         # Compress the file
-        compress_pdf_with_ghostscript(file_data.filepath, output_file)
+        compress_pdf_with_ghostscript(original_file, output_file)
+
+        # Get sizes of the original and compressed files
+        original_size = os.path.getsize(original_file)
+        compressed_size = os.path.getsize(output_file)
+
+        # Compare sizes and proceed if the compressed file is smaller or equal
+        if compressed_size <= original_size:
+            # Update the database with the compressed file path and status
+            file_data.compressed_filepath = output_file
+            file_data.status = 'compressed'
+        else:
+            # If the compressed file is larger, don't update the file data and delete the compressed file
+            os.remove(output_file)
+            file_data.compressed_filepath = ''
+            file_data.status = 'compression_failed'
 
         # Update the database with the compressed file path and status
         file_data.compressed_filepath = output_file

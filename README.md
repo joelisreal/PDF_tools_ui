@@ -88,4 +88,4 @@ To run the web application, follow these steps:
 
 ## Disclaimer
 
-Since the quality of the compressed PDF files depends on various factors such as content and chosen settings, it's recommended to experiment with different settings to find the balance between file size reduction and acceptable quality.
+Since the quality of the compressed PDF files depends on various factors such as content and chosen settings, it's recommended to experiment with different settings to find the balance between file size reduction and acceptable quality. Additionally, if a file cannot be compressed successfully, it will not be returned for download to ensure that only valid compressed files are provided.
