@@ -19,6 +19,7 @@ export class FilePickerManager {
         addMoreFiles.addEventListener('click', () => this.fileAdderButton(addMoreFiles));
     }
 
+    // Trigger the file picker when the button is clicked
     static fileAdderButton(button) {
         const fileInput = this.createFileInput();
         document.body.appendChild(fileInput);
@@ -26,6 +27,7 @@ export class FilePickerManager {
         fileInput.parentNode.removeChild(fileInput);
     }
 
+    // Create a file input element for selecting files
     static createFileInput() {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
@@ -36,25 +38,32 @@ export class FilePickerManager {
         return fileInput;
     }
 
+    // Handle the files selected by the user
     static handleFileSelection(e) {
+        // Ensure that "add more files" functionality is only executed once
         if (!state.addMoreFilesFunctionalityExecuted) {
             UIManager.addMoreFilesFunctionality();
-            const files = e.target.files;
+            const files = e.target.files; // Get the selected files
+            // Loop through the selected files and create object URLs for each PDF
             Array.from(files).forEach(file => {
                 if (file.type === 'application/pdf') {
-                    const objectUrl = URL.createObjectURL(file);
-                    state.objectUrls.push(objectUrl);
+                    const objectUrl = URL.createObjectURL(file); // Create an object URL for the PDF
+                    state.objectUrls.push(objectUrl); // Store object URLs in state
                 }
             });
+            // Compress PDFs using the created object URLs
             compressFunctionality(state.objectUrls);
-            state.addMoreFilesFunctionalityExecuted = true;
+            state.addMoreFilesFunctionalityExecuted = true; // Mark the functionality as executed
         }
 
+        // Handle each selected file (handle PDF files only)
         Array.from(e.target.files).forEach(file => {
             if (file.type === 'application/pdf') {
-                PDFHandler.fileHandler(file);
+                PDFHandler.fileHandler(file); // Handle the PDF file (e.g., display or process it)
             }
         });
+
+        // Upload the selected files
         FileUploader.uploadFile(Array.from(e.target.files));
     }
 }
